@@ -13,5 +13,9 @@ namespace MyBlog.Web.Data
 
         public DbSet<BlogPost> BlogPost{ get; set; }
         public DbSet<Tag> Tag { get; set; }
+
+        public class myblogDbContext
+        {
+        }
     }
 }
