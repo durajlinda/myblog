@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Bloggie.Web.Models.ViewModels
+namespace MyBlog.Web.Models.ViewModels
 {
     public class AddBlogPost
     {

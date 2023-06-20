@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MyBlog.Web.Data;
 using System.Runtime.InteropServices;
-using Bloggie.Web.Models.ViewModels;
+using MyBlog.Web.Models.ViewModels;
 
 namespace MyBlog.Web.Pages.Admin.Blogs
 {

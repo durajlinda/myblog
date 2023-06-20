@@ -1,14 +1,22 @@
 using MyBlog.Web.Data;
-using Microsoft.EntityFrameworkCore;
-var builder = WebApplication.CreateBuilder(args);
 
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddControllers();
 
 builder.Services.AddDbContext<MyBlogDbContext>(options =>
-options.UseSqlServer(
-    builder.Configuration.GetConnectionString("MyBlogDbConnectionString")));
+ options.UseSqlServer(
+     builder.Configuration.GetConnectionString("MyBlogDbConnectionString")));
+
+
+
+
+
 
 var app = builder.Build();
 
@@ -25,8 +33,10 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.MapControllers();
 
 app.Run();
