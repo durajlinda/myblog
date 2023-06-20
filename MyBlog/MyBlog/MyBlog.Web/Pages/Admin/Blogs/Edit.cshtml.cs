@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MyBlog.Web.Data;
 using MyBlog.Web.Models.Domain;
+using System.Reflection.Metadata.Ecma335;
 
 namespace MyBlog.Web.Pages.Admin.Blogs
 {
@@ -26,7 +27,7 @@ namespace MyBlog.Web.Pages.Admin.Blogs
             
         }
 
-        public IActionResult OnPost()
+        public IActionResult OnPostEdit()
         {
           var  existingBlogPost = myblogdbcontext.BlogPost.Find(BlogPost.Id);
 
@@ -46,6 +47,22 @@ namespace MyBlog.Web.Pages.Admin.Blogs
 
             return RedirectToPage("/Admin/Blogs/List");
         }
+
+        [HttpPost]
+        public IActionResult OnPostDelete()
+        {
+            var existingBlogPost = myblogdbcontext.BlogPost.Find(BlogPost.Id);
+            if (existingBlogPost != null)
+            {
+                myblogdbcontext.BlogPost.Remove(existingBlogPost);
+                myblogdbcontext.SaveChanges();
+                return RedirectToPage("/Admin/Blogs/List");
+            }
+            return Page();
+
+
+        }
+
 
     }
 }
