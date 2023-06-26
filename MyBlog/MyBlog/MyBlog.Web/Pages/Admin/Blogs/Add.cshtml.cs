@@ -4,26 +4,29 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using MyBlog.Web.Data;
 using System.Runtime.InteropServices;
 using MyBlog.Web.Models.ViewModels;
+using MyBlog.Web.Repositories;
 
 namespace MyBlog.Web.Pages.Admin.Blogs
 {
     public class AddModel : PageModel
     {
         private readonly MyBlogDbContext myblogDbContext;
+        private readonly IBlogRepository blogpostRepository;
 
         [BindProperty]
         public AddBlogPost AddBlogPostRequest { get; set; }
 
-        public AddModel(MyBlogDbContext myblogDbContext)
+        public AddModel(IBlogRepository blogpostRepository)
         {
-            this.myblogDbContext = myblogDbContext;
+            
+            this.blogpostRepository = blogpostRepository;
         }
 
         public void OnGet()
         {
         }
 
-        public IActionResult OnPost()
+       public async Task<IActionResult> OnPost()
         {
             var blogPost = new BlogPost()
             {
@@ -38,8 +41,7 @@ namespace MyBlog.Web.Pages.Admin.Blogs
                 Visible = AddBlogPostRequest.Visible
             };
 
-            myblogDbContext.BlogPost.Add(blogPost);
-            myblogDbContext.SaveChanges();
+          await  blogpostRepository.AddAsync(blogPost);
 
             return RedirectToPage("/Admin/Blogs/List");
         }

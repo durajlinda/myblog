@@ -9,27 +9,38 @@
     </div>
 </div>
 
-<div class="container">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Heading</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var blogpost in Model.BlogPosts)
-            {
-                <tr>
-                    <td>@blogpost.Id</td>
-                    <td>@blogpost.Heading</td>
-                    <td>
-                        <a class="btn btn-primary" href="/Admin/Blogs/Edit/@blogpost.Id">View</a>
 
-                    </td>
+@if (Model.BlogPosts.Count != null && Model.BlogPosts.Any() )
+{
+    <div class="container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Heading</th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @foreach (var blogpost in Model.BlogPosts)
+                {
+                    <tr>
+                        <td>@blogpost.Id</td>
+                        <td>@blogpost.Heading</td>
+                        <td>
+                            <a class="btn btn-primary" href="/Admin/Blogs/Edit/@blogpost.Id">View</a>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="container">
+       <p>No BLOGPOST found!</p>
+    </div>
+}
+

@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using MyBlog.Web.Data;
 using MyBlog.Web.Models.Domain;
+using MyBlog.Web.Repositories;
 using static MyBlog.Web.Data.MyBlogDbContext;
 
 namespace MyBlog.Web.Pages.Admin.Blogs
@@ -9,17 +11,18 @@ namespace MyBlog.Web.Pages.Admin.Blogs
     public class ListModel : PageModel
     {
         private readonly MyBlogDbContext myblogDbContext;
+        private readonly IBlogRepository blogRepository;
 
         public List<BlogPost> BlogPosts { get; set; }
 
-        public ListModel(MyBlogDbContext myblogDbContext)
+        public ListModel(IBlogRepository blogRepository)
         {
-            this.myblogDbContext = myblogDbContext;
+            this.blogRepository = blogRepository;
         }
 
-        public void OnGet()
+        public async Task OnGet()
         {
-            BlogPosts = myblogDbContext.BlogPost.ToList();
+            BlogPosts = (await blogRepository.GetAllAsync())?.ToList();
         }
     }
 }

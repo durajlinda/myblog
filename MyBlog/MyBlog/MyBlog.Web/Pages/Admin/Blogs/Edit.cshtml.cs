@@ -2,67 +2,43 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MyBlog.Web.Data;
 using MyBlog.Web.Models.Domain;
+using MyBlog.Web.Repositories;
 using System.Reflection.Metadata.Ecma335;
 
 namespace MyBlog.Web.Pages.Admin.Blogs
 {
-
-    
     public class EditModel : PageModel
     {
-        private readonly MyBlogDbContext myblogdbcontext;
-
         [BindProperty]
         public BlogPost BlogPost { get; set; }
+        public IBlogRepository BlogpostRepository { get; }
 
-
-        public EditModel(MyBlogDbContext myblogdbcontext )
+        public EditModel(IBlogRepository blogpostRepository)
         {
-            this.myblogdbcontext = myblogdbcontext;
-        }
-        public void OnGet(Guid id)
-        {
-           BlogPost = myblogdbcontext.BlogPost.Find(id);
-
-            
+            BlogpostRepository = blogpostRepository;
         }
 
-        public IActionResult OnPostEdit()
+        public async Task OnGet(Guid id)
         {
-          var  existingBlogPost = myblogdbcontext.BlogPost.Find(BlogPost.Id);
+            BlogPost = await BlogpostRepository.GetAsync(id);
+        }
 
-            if (existingBlogPost != null)
-            {
-                existingBlogPost.Heading = BlogPost.Heading;
-                existingBlogPost.PageTitle = BlogPost.PageTitle;
-                existingBlogPost.Content = BlogPost.Content;
-                existingBlogPost.ShortDescription = BlogPost.ShortDescription;
-                existingBlogPost.FeaturedImageUrl = BlogPost.FeaturedImageUrl;
-                existingBlogPost.UrlHandle = BlogPost.UrlHandle;
-                existingBlogPost.PublishedDate = BlogPost.PublishedDate;
-                existingBlogPost.Author = BlogPost.Author;
-                existingBlogPost.Visible = BlogPost.Visible;
-            }
-           myblogdbcontext.SaveChanges();
-
+        public async Task<IActionResult> OnPostEdit()
+        {
+            await BlogpostRepository.UpdateAsync(BlogPost);
             return RedirectToPage("/Admin/Blogs/List");
         }
 
         [HttpPost]
-        public IActionResult OnPostDelete()
+        public async Task<IActionResult> OnPostDelete()
         {
-            var existingBlogPost = myblogdbcontext.BlogPost.Find(BlogPost.Id);
-            if (existingBlogPost != null)
+            var deleted = await BlogpostRepository.DeleteAsync(BlogPost.Id);
+            if (deleted)
             {
-                myblogdbcontext.BlogPost.Remove(existingBlogPost);
-                myblogdbcontext.SaveChanges();
                 return RedirectToPage("/Admin/Blogs/List");
             }
+
             return Page();
-
-
         }
-
-
     }
 }

@@ -2,6 +2,7 @@ using MyBlog.Web.Data;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MyBlog.Web.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +15,7 @@ builder.Services.AddDbContext<MyBlogDbContext>(options =>
      builder.Configuration.GetConnectionString("MyBlogDbConnectionString")));
 
 
-
+builder.Services.AddScoped<IBlogRepository, BlogPostRepository>();
 
 
 
