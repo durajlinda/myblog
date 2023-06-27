@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using MyBlog.Web.Data;
 using MyBlog.Web.Models.Domain;
+using MyBlog.Web.Models.ViewModels;
 using MyBlog.Web.Repositories;
+using System.Text.Json;
 using static MyBlog.Web.Data.MyBlogDbContext;
 
 namespace MyBlog.Web.Pages.Admin.Blogs
@@ -22,6 +24,13 @@ namespace MyBlog.Web.Pages.Admin.Blogs
 
         public async Task OnGet()
         {
+            var notificationJson = TempData["Notification"] as string;
+            if (notificationJson != null )
+            {
+                ViewData["Notification"] = JsonSerializer.Deserialize<Notifications>(notificationJson.ToString());
+
+            }
+
             BlogPosts = (await blogRepository.GetAllAsync())?.ToList();
         }
     }

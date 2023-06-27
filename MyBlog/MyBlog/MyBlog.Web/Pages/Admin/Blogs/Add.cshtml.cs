@@ -5,6 +5,8 @@ using MyBlog.Web.Data;
 using System.Runtime.InteropServices;
 using MyBlog.Web.Models.ViewModels;
 using MyBlog.Web.Repositories;
+using MyBlog.Web.Enums;
+using System.Text.Json;
 
 namespace MyBlog.Web.Pages.Admin.Blogs
 {
@@ -41,7 +43,15 @@ namespace MyBlog.Web.Pages.Admin.Blogs
                 Visible = AddBlogPostRequest.Visible
             };
 
-          await  blogpostRepository.AddAsync(blogPost);
+            await  blogpostRepository.AddAsync(blogPost);
+
+            var notification= new Notifications
+            {
+                Type = Enums.NotificationType.Success,
+               Message = "Blog post added successfully",
+               
+            };
+            JsonSerializer.Serialize(notification);
 
             return RedirectToPage("/Admin/Blogs/List");
         }

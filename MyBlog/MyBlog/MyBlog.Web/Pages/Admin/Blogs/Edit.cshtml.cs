@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MyBlog.Web.Data;
+using MyBlog.Web.Enums;
 using MyBlog.Web.Models.Domain;
+using MyBlog.Web.Models.ViewModels;
 using MyBlog.Web.Repositories;
 using System.Reflection.Metadata.Ecma335;
+using System.Text.Json;
 
 namespace MyBlog.Web.Pages.Admin.Blogs
 {
@@ -25,8 +28,30 @@ namespace MyBlog.Web.Pages.Admin.Blogs
 
         public async Task<IActionResult> OnPostEdit()
         {
-            await BlogpostRepository.UpdateAsync(BlogPost);
-            return RedirectToPage("/Admin/Blogs/List");
+            try
+            {
+/*                throw new Exception();
+*/
+                await BlogpostRepository.UpdateAsync(BlogPost);
+                ViewData["Notification"] = new Notifications
+                {
+                    Message = "Blog post updated successfully",
+                    Type = NotificationType.Success
+                };
+
+            }
+           catch (Exception e)
+            {
+                ViewData["Notification"] = new Notifications
+                {
+
+                    Type = NotificationType.Error,
+                    Message = "Blog post update failed",
+                };
+
+               
+            }
+            return Page();
         }
 
         [HttpPost]
@@ -34,7 +59,15 @@ namespace MyBlog.Web.Pages.Admin.Blogs
         {
             var deleted = await BlogpostRepository.DeleteAsync(BlogPost.Id);
             if (deleted)
+
             {
+                var notification = new Notifications
+                {
+                   
+                    Type = NotificationType.Success,
+                     Message = "Blog post deleted successfully"
+                };
+                TempData["Notifications"] = JsonSerializer.Serialize(notification);
                 return RedirectToPage("/Admin/Blogs/List");
             }
 
