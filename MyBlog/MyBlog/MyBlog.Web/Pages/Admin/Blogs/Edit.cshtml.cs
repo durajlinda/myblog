@@ -14,6 +14,9 @@ namespace MyBlog.Web.Pages.Admin.Blogs
     {
         [BindProperty]
         public BlogPost BlogPost { get; set; }
+
+        [BindProperty]
+        public IFormFile FeaturedImage { get; set; }
         public IBlogRepository BlogpostRepository { get; }
 
         public EditModel(IBlogRepository blogpostRepository)
@@ -42,7 +45,8 @@ namespace MyBlog.Web.Pages.Admin.Blogs
             }
            catch (Exception e)
             {
-                ViewData["Notification"] = new Notifications
+                ViewData["Notification"] = new 
+
                 {
 
                     Type = NotificationType.Error,
@@ -67,7 +71,7 @@ namespace MyBlog.Web.Pages.Admin.Blogs
                     Type = NotificationType.Success,
                      Message = "Blog post deleted successfully"
                 };
-                TempData["Notifications"] = JsonSerializer.Serialize(notification);
+                TempData["Notification"] = JsonSerializer.Serialize(notification);
                 return RedirectToPage("/Admin/Blogs/List");
             }
 

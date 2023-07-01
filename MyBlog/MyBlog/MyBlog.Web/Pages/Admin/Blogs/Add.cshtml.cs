@@ -18,6 +18,9 @@ namespace MyBlog.Web.Pages.Admin.Blogs
         [BindProperty]
         public AddBlogPost AddBlogPostRequest { get; set; }
 
+        [BindProperty]
+        public IFormFile FeaturedImage { get; set; }
+
         public AddModel(IBlogRepository blogpostRepository)
         {
             
@@ -51,7 +54,7 @@ namespace MyBlog.Web.Pages.Admin.Blogs
                Message = "Blog post added successfully",
                
             };
-            JsonSerializer.Serialize(notification);
+               TempData["Notification"] = JsonSerializer.Serialize(notification);
 
             return RedirectToPage("/Admin/Blogs/List");
         }
