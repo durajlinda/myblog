@@ -45,6 +45,11 @@ namespace MyBlog.Web.Repositories
             return await myblogDbContext.BlogPost.FindAsync(id);
         }
 
+        public async Task<BlogPost> GetAsync(string urlHandle)
+        {
+            return await myblogDbContext.BlogPost.FirstOrDefaultAsync(x => x.UrlHandle == urlHandle);
+        }
+
         public async Task<BlogPost> UpdateAsync(BlogPost blogPost)
         {
             var existingBlogPost = await myblogDbContext.BlogPost.FindAsync(blogPost.Id);
