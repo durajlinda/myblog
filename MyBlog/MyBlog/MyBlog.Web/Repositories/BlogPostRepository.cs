@@ -41,6 +41,13 @@ namespace MyBlog.Web.Repositories
             return await myblogDbContext.BlogPost.Include(nameof(BlogPost.Tags)).ToListAsync();
         }
 
+        public async Task<IEnumerable<BlogPost>> GetAllAsync(string tagName)
+        {
+            return await (myblogDbContext.BlogPost.Include(nameof(BlogPost.Tags))
+                .Where(x => x.Tags.Any(y => y.Name == tagName)))
+                .ToListAsync();
+        }
+
         public async Task<BlogPost> GetAsync(Guid id)
         {
             return await myblogDbContext.BlogPost.Include(nameof(BlogPost.Tags))
