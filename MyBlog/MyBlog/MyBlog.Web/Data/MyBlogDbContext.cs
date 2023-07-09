@@ -7,7 +7,7 @@ namespace MyBlog.Web.Data
 
 
     {
-        public MyBlogDbContext(DbContextOptions options) : base(options)
+        public MyBlogDbContext(DbContextOptions<MyBlogDbContext> options) : base(options)
         {
         }
 
@@ -15,8 +15,8 @@ namespace MyBlog.Web.Data
         public DbSet<Tag> Tags { get; set; }
 
 
-        public class myblogDbContext
+        /*public class myblogDbContext
         {
-        }
+        }*/
     }
 }

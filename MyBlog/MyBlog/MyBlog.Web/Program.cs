@@ -15,6 +15,14 @@ builder.Services.AddDbContext<MyBlogDbContext>(options =>
      builder.Configuration.GetConnectionString("MyBlogDbConnectionString")));
 
 
+builder.Services.AddDbContext<AuthDbContext>(options =>
+options.UseSqlServer(
+        builder.Configuration.GetConnectionString("MyBlogAuthConnectionString")));
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<AuthDbContext>();
+
+
 builder.Services.AddScoped<IBlogRepository, BlogPostRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepositoryCloudinary>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
@@ -36,6 +44,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+
 
 app.UseAuthentication();
 app.UseAuthorization();

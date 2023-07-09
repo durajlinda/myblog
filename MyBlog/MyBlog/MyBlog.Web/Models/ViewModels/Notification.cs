@@ -2,7 +2,7 @@
 
 namespace MyBlog.Web.Models.ViewModels
 {
-    public class Notifications
+    public class Notification
     {
         public string Message { get; set; }
 

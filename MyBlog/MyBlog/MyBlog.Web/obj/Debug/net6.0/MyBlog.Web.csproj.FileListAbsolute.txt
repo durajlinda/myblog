@@ -87,3 +87,4 @@ C:\Users\User\Documents\GitHub\myblog\MyBlog\MyBlog\MyBlog.Web\obj\Debug\net6.0\
 C:\Users\User\Documents\GitHub\myblog\MyBlog\MyBlog\MyBlog.Web\obj\Debug\net6.0\ref\MyBlog.Web.dll
 C:\Users\User\Documents\GitHub\myblog\MyBlog\MyBlog\MyBlog.Web\bin\Debug\net6.0\CloudinaryDotNet.dll
 C:\Users\User\Documents\GitHub\myblog\MyBlog\MyBlog\MyBlog.Web\bin\Debug\net6.0\Newtonsoft.Json.dll
+C:\Users\User\Documents\GitHub\myblog\MyBlog\MyBlog\MyBlog.Web\bin\Debug\net6.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
