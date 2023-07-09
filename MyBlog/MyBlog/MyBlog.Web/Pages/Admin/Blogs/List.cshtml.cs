@@ -27,7 +27,7 @@ namespace MyBlog.Web.Pages.Admin.Blogs
             var notificationJson = TempData["Notification"] as string;
             if (notificationJson != null )
             {
-                ViewData["Notification"] = JsonSerializer.Deserialize<Notifications>(notificationJson.ToString());
+                ViewData["Notification"] = JsonSerializer.Deserialize<Notification>(notificationJson.ToString());
 
             }
 

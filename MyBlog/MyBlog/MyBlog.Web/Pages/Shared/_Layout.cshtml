@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -26,32 +29,48 @@
                         <li class="nav-item">
                             <a class="nav-link " asp-area="" asp-page="/Index">Home</a>
                         </li>
-                       <li class="nav-item dropdown">
+                        <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false" id="navbarDropdownAdmin">
-                            Admin
-                           </a>
+                               aria-expanded="false" id="navbarDropdownAdmin">
+                                Admin
+                            </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdownAdmin">
-                              <li>
-                               <a class="dropdown-item" href="/Admin/Blogs/Add" > Add Blog Post</a>
-                              </li>
                                 <li>
-                                 <a class="dropdown-item" href="/Admin/Blogs/List" >  Blog Posts</a>
-                                 </li>
+                                    <a class="dropdown-item" href="/Admin/Blogs/Add"> Add Blog Post</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/Admin/Blogs/List">  Blog Posts</a>
+                                </li>
 
                             </ul>
 
-                       </li>
+                        </li>
                     </ul>
+                    <div class="d-flex align-items-center">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <div class="me-3 text-light">
+                                @User?.Identity?.Name
+                            </div>
+                            <a href ="/logout" class="btn bg-light text-dark me-3">Logout</a>
+                               
+                        }
+                        else
+                        {
+                            <a href="/login" class="btn bg-light text-dark me-3">Login</a>
+                            <a href="/register" class="btn bg-light text-dark me-3">Register</a>
+                        }
+                    </div>
+
                 </div>
             </div>
         </nav>
     </header>
-   
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-     <footer class="border-top footer text-muted">
+
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+    <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2023 - MyBlog.Web - <a asp-area="" asp-page="/Privacy">Privacy</a>
         </div>

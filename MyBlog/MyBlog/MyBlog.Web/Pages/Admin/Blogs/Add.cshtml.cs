@@ -52,7 +52,7 @@ namespace MyBlog.Web.Pages.Admin.Blogs
 
             await  blogpostRepository.AddAsync(blogPost);
 
-            var notification= new Notifications
+            var notification= new Notification
             {
                 Type = Enums.NotificationType.Success,
                Message = "Blog post added successfully",

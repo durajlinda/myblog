@@ -42,7 +42,7 @@ namespace MyBlog.Web.Pages.Admin.Blogs
             {
                 BlogPost.Tags = new List <Tag>(Tags.Split(',').Select(x => new Tag { Name = x.Trim() }));
                 await BlogpostRepository.UpdateAsync(BlogPost);
-                ViewData["Notification"] = new Notifications
+                ViewData["Notification"] = new Notification
                 {
                     Message = "Blog post updated successfully",
                     Type = NotificationType.Success
@@ -71,7 +71,7 @@ namespace MyBlog.Web.Pages.Admin.Blogs
             if (deleted)
 
             {
-                var notification = new Notifications
+                var notification = new Notification
                 {
                    
                     Type = NotificationType.Success,
