@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using static MyBlog.Web.Data.MyBlogDbContext;
 
 namespace MyBlog.Web.Pages.Admin.Blogs
 {
+    [Authorize(Roles = "Admin")]
     public class ListModel : PageModel
     {
         private readonly MyBlogDbContext myblogDbContext;

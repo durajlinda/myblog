@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MyBlog.Web.Data;
@@ -10,6 +11,7 @@ using System.Text.Json;
 
 namespace MyBlog.Web.Pages.Admin.Blogs
 {
+    [Authorize(Roles = "Admin")]
     public class EditModel : PageModel
     {
         [BindProperty]

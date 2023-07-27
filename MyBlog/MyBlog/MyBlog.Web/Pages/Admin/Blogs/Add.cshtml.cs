@@ -7,9 +7,11 @@ using MyBlog.Web.Models.ViewModels;
 using MyBlog.Web.Repositories;
 using MyBlog.Web.Enums;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyBlog.Web.Pages.Admin.Blogs
 {
+    [Authorize(Roles = "Admin")]
     public class AddModel : PageModel
     {
         private readonly MyBlogDbContext myblogDbContext;

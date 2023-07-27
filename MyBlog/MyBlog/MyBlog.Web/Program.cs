@@ -33,6 +33,11 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 });
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Login";
+    options.AccessDeniedPath= "/AccessDenie";
+});
 
 builder.Services.AddScoped<IBlogRepository, BlogPostRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepositoryCloudinary>();

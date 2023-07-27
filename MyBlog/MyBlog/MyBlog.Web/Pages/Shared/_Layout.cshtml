@@ -29,22 +29,27 @@
                         <li class="nav-item">
                             <a class="nav-link " asp-area="" asp-page="/Index">Home</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+
+                        @if(SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                                aria-expanded="false" id="navbarDropdownAdmin">
-                                Admin
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownAdmin">
-                                <li>
-                                    <a class="dropdown-item" href="/Admin/Blogs/Add"> Add Blog Post</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="/Admin/Blogs/List">  Blog Posts</a>
-                                </li>
+                                    Admin
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownAdmin">
+                                    <li>
+                                        <a class="dropdown-item" href="/Admin/Blogs/Add"> Add Blog Post</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="/Admin/Blogs/List">  Blog Posts</a>
+                                    </li>
 
-                            </ul>
+                                </ul>
 
-                        </li>
+                            </li>
+                        })
+                        
                     </ul>
                     <div class="d-flex align-items-center">
                         @if (SignInManager.IsSignedIn(User))
