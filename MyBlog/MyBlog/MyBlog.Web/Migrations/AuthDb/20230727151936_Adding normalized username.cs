@@ -4,7 +4,7 @@
 
 namespace MyBlog.Web.Migrations.AuthDb
 {
-    /// <inheritdoc />
+    /// <inheritdoc /> 
     public partial class Addingnormalizedusername : Migration
     {
         /// <inheritdoc />
