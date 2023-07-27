@@ -27,13 +27,19 @@ namespace MyBlog.Web.Pages
             var identityResult = await userManger.CreateAsync(user, RegisterViewModel.Password);
 
             if (identityResult.Succeeded)
+
             {
-                ViewData["Notification"] = new Notification
+                var addRolesResult = await userManger.AddToRoleAsync(user, "User");
+
+                if (addRolesResult.Succeeded)
                 {
-                    Type = Enums.NotificationType.Success,
-                    Message = "You have been registered successfully"
-                };
-                return Page();
+                    ViewData["Notification"] = new Notification
+                    {
+                        Type = Enums.NotificationType.Success,
+                        Message = "You have been registered successfully"
+                    };
+                    return Page();
+                }
             }
             ViewData["Notification"] = new Notification
             {
