@@ -36,7 +36,9 @@ namespace MyBlog.Web.Data
                 Id = superAdminId,
                 UserName = "superadmin@myblog.com",
 
-                Email = "superadmin@myblog.com"
+                Email = "superadmin@myblog.com",
+                NormalizedEmail = "superadmin@myblog.com".ToUpper(),
+                NormalizedUserName = "superadmin@myblog.com".ToUpper()
 
 
             };
