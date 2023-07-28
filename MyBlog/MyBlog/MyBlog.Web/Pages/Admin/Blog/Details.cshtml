@@ -1,9 +1,14 @@
-﻿@page "/blog/{urlHandle}"
+﻿
+@page "/blog/{urlHandle}"
 
 @model MyBlog.Web.Pages.Admin.Blog.DetailsModel
+
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
 @{
     ViewData["Title"] = Model.BlogPost.PageTitle;
 }
+
 
 <div class="container my-5">
     <div class="row justify-content-center">
@@ -15,6 +20,12 @@
                    <span class="text-secondary">@Model.BlogPost.Author</span>
                    <span class="text-secondary">@Model.BlogPost.PublishedDate.ToShortDateString()</span>
 
+               </div>
+
+               <div class="mb-3">
+                       <span> 
+                    <a id="btnLike" style="cursor:pointer"><i class="bi bi-hand-thumbs-up"></i></a>
+                     @Model.TotalLikes likes</span>
                </div>
                <div class="mb-3"> 
                      @if (Model.BlogPost.Tags != null )
@@ -42,3 +53,32 @@
         </div>
     </div>
 </div>
+
+
+
+@section Scripts {
+    <script>
+        const btnLike = document.getElementById('btnLike');
+
+        async function like() {
+           
+                const response = await fetch('/api/blogpostlike/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        blogPostId: '@Model.BlogPost.Id'
+                        userId : '@UserManager.GetUserId(User)'
+
+                    })
+                })
+
+                
+           .then(console.log('request finished.'));
+        }
+
+        btnLike.addEventListener('click', like);
+    </script>
+}
