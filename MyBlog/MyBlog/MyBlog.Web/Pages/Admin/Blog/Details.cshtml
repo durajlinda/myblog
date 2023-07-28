@@ -1,14 +1,15 @@
-﻿
-@page "/blog/{urlHandle}"
-
+﻿@page "/blog/{urlHandle}"
 @model MyBlog.Web.Pages.Admin.Blog.DetailsModel
 
 @using Microsoft.AspNetCore.Identity
-@inject UserManager<IdentityUser> UserManager
-@{
-    ViewData["Title"] = Model.BlogPost.PageTitle;
-}
+@using MyBlog.Web.Models.ViewModels
+@inject SignInManager<IdentityUser> signInManager
 
+@inject UserManager<IdentityUser> userManager
+
+@{
+    ViewData["Title"] = Model?.BlogPost.PageTitle;
+}
 
 <div class="container my-5">
     <div class="row justify-content-center">
@@ -16,40 +17,56 @@
             @if (Model.BlogPost != null)
             {
                 <h1 class="mb-3">@Model.BlogPost.Heading</h1>
-               <div class="d-flex justify-content-between mb-3">
-                   <span class="text-secondary">@Model.BlogPost.Author</span>
-                   <span class="text-secondary">@Model.BlogPost.PublishedDate.ToShortDateString()</span>
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-secondary">@Model.BlogPost.Author</span>
+                    <span class="text-secondary">@Model.BlogPost.PublishedDate.ToShortDateString()</span>
 
-               </div>
+                </div>
 
-               <div class="mb-3">
-                       <span> 
-                    <a id="btnLike" style="cursor:pointer"><i class="bi bi-hand-thumbs-up"></i></a>
-                     @Model.TotalLikes likes</span>
-               </div>
-               <div class="mb-3"> 
-                     @if (Model.BlogPost.Tags != null )
-                     {
-                          foreach (var tag in Model.BlogPost.Tags)
-                          {
+                <div class="mb-3">
+                    <span>
+                        @if (signInManager.IsSignedIn(User))
+                        {
+                            @if (Model.Liked)
+                            {
+                                <a style="cursor: pointer">
+                                    <i class="bi bi-hand-thumbs-up-fill"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                <a id="btnLike" style="cursor: pointer">
+                                    <i class="bi bi-hand-thumbs-up"></i>
+                                </a>
+                            }
+                        }
+
+                        <span id="totalLikes">@Model.TotalLikes</span> likes
+                    </span>
+                </div>
+                <div class="mb-3">
+                    @if (Model.BlogPost.Tags != null)
+                    {
+                        foreach (var tag in Model.BlogPost.Tags)
+                        {
                             <a href="/tags/@tag.Name">
                                 <span class="badge bg-dark">@tag.Name</span>
                             </a>
-                          }
-                     }
-               </div>
+                        }
+                    }
+                </div>
 
-               <img src="@Model.BlogPost.FeaturedImageUrl" class="d-block img-fluid mb-3"/>
-               <div class="mb-3 blog-details">
-                   @Html.Raw(Model.BlogPost.Content)
-               </div>
+                <img src="@Model.BlogPost.FeaturedImageUrl" class="d-block img-fluid mb-3" />
+                <div class="mb-3 blog-details">
+                    @Html.Raw(Model.BlogPost.Content)
+                </div>
             }
             else
             {
                 <h2>BlogPost not found</h2>
             }
 
-            
+
         </div>
     </div>
 </div>
@@ -59,26 +76,39 @@
 @section Scripts {
     <script>
         const btnLike = document.getElementById('btnLike');
+        const totalLikesElement = document.getElementById('totalLikes');
+        const userId = '@userManager.GetUserId(User)'; // Pass the user ID to JavaScript variable
 
-        async function like() {
-           
-                const response = await fetch('/api/blogpostlike/add', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        blogPostId: '@Model.BlogPost.Id'
-                        userId : '@UserManager.GetUserId(User)'
-
-                    })
-                })
-
-                
-           .then(console.log('request finished.'));
+        async function getTotalLikes() {
+            fetch('/api/blogpostlike/@Model.BlogPost.Id/totallikes', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*'
+                }
+            })
+                .then(data => data.json())
+                .then(result => totalLikesElement.innerHTML = result);
         }
 
-        btnLike.addEventListener('click', like);
+        async function addLikeForBlog() {
+            fetch('/api/blogpostlike/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*'
+                },
+                body: JSON.stringify({ blogPostId: '@Model.BlogPost.Id', userId: userId }) // Use the JavaScript variable here
+            })
+                .then(() => {
+                    btnLike.innerHTML = '<i class="bi bi-hand-thumbs-up-fill"></i>';
+                    btnLike.removeEventListener('click', addLikeForBlog);
+                    getTotalLikes();
+                });
+        }
+
+        btnLike.addEventListener('click', addLikeForBlog);
+        getTotalLikes(); // Call this function initially to show the total likes
+
     </script>
 }
