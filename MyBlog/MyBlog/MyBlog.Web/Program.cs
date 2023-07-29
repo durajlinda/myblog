@@ -48,6 +48,7 @@ builder.Services.AddScoped<IBlogPostCommentRepository, BlogPostCommentRepository
 
 
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -72,3 +73,4 @@ app.MapRazorPages();
 app.MapControllers();
 
 app.Run();
+

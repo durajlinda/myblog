@@ -1,4 +1,5 @@
-﻿using MyBlog.Web.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using MyBlog.Web.Data;
 using MyBlog.Web.Models.Domain;
 
 namespace MyBlog.Web.Repositories
@@ -16,6 +17,11 @@ namespace MyBlog.Web.Repositories
            await myBlogDbContext.BlogPostComment.AddAsync(blogPostComment);
            await myBlogDbContext.SaveChangesAsync();
            return blogPostComment;
+        }
+
+        public async Task<IEnumerable<BlogPostComment>> GetAllAsync(Guid blogPostId)
+        {
+           return await myBlogDbContext.BlogPostComment.Where(x => x.BlogPostId == blogPostId).ToListAsync();
         }
     }
 }

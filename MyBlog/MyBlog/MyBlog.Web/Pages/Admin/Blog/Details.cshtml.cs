@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Server.IIS.Core;
 using MyBlog.Web.Models.Domain;
+using MyBlog.Web.Models.ViewModels;
 using MyBlog.Web.Repositories;
 
 namespace MyBlog.Web.Pages.Admin.Blog
@@ -12,6 +13,9 @@ namespace MyBlog.Web.Pages.Admin.Blog
         private readonly IBlogRepository blogRepository;
 
         public BlogPost BlogPost { get; set; }
+
+        public List<BlogComment> Comments { get; set; }
+
 
         public int TotalLikes { get; set; }
         public bool Liked { get; set; }
@@ -54,6 +58,10 @@ namespace MyBlog.Web.Pages.Admin.Blog
                     var userId = userManager.GetUserId(User);
 
                     Liked = likes.Any(x => x.UserId == Guid.Parse(userId));
+
+                    await GetComments();
+
+
                 }
 
 
@@ -66,26 +74,43 @@ namespace MyBlog.Web.Pages.Admin.Blog
             return Page();
         }
 
-        public async Task<IActionResult> OnPost()
-        {
 
-            if (signInManager.IsSignedIn(User)&& !string.IsNullOrWhiteSpace(CommentDescription))
+        public async Task<IActionResult> OnPost(string urlHandle)
+        {
+            if (signInManager.IsSignedIn(User) && !string.IsNullOrWhiteSpace(CommentDescription))
             {
                 var userId = userManager.GetUserId(User);
-                var comment = new BlogPostComment
-                {
-                    BlogPostId = BlogPost.Id,
-                    Description = CommentDescription,
 
+                var comment = new BlogPostComment()
+                {
+                    BlogPostId = BlogPostId,
+                    Description = CommentDescription,
                     DateAdded = DateTime.Now,
                     UserId = Guid.Parse(userId)
                 };
+
                 await blogPostCommentRepository.AddAsync(comment);
             }
-            return Page();
-           
-          
-           
+
+            return RedirectToPage("/Blog/Details", new { urlHandle = urlHandle });
+        }
+
+        private async Task GetComments()
+        {
+            var blogPostComments = await blogPostCommentRepository.GetAllAsync(BlogPost.Id);
+
+            var blogCommentsViewModel = new List<BlogComment>();
+            foreach (var blogPostComment in blogPostComments)
+            {
+                blogCommentsViewModel.Add(new BlogComment
+                {
+                    DateAdded = blogPostComment.DateAdded,
+                    Description = blogPostComment.Description,
+                    Username = (await userManager.FindByIdAsync(blogPostComment.UserId.ToString())).UserName
+                });
+            }
+
+            Comments = blogCommentsViewModel;
         }
     }
 }
