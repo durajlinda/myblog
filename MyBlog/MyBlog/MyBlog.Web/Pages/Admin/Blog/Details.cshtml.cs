@@ -15,20 +15,29 @@ namespace MyBlog.Web.Pages.Admin.Blog
 
         public int TotalLikes { get; set; }
         public bool Liked { get; set; }
+
+        [BindProperty]
+        public Guid BlogPostId { get; set; }
+        [BindProperty]
+        public string CommentDescription { get; set; }
         public IBlogPostLikeRepository blogPostLikeRepository { get; }
         private readonly SignInManager<IdentityUser> signInManager;
         private readonly UserManager<IdentityUser> userManager;
+        private readonly IBlogPostCommentRepository blogPostCommentRepository;
 
         public DetailsModel(IBlogRepository blogRepository,
             IBlogPostLikeRepository blogPostLikeRepository,
             SignInManager<IdentityUser> signInManager,
-            UserManager<IdentityUser> userManager)
+            UserManager<IdentityUser> userManager,
+            IBlogPostCommentRepository blogPostCommentRepository
+            )
 
         {
             this.blogRepository = blogRepository;
             this.blogPostLikeRepository = blogPostLikeRepository;
             this.signInManager = signInManager;
             this.userManager = userManager;
+            this.blogPostCommentRepository = blogPostCommentRepository;
         }
 
         public async Task<IActionResult> OnGet(string urlHandle)
@@ -37,6 +46,7 @@ namespace MyBlog.Web.Pages.Admin.Blog
 
             if (BlogPost != null)
             {
+                BlogPostId = BlogPost.Id;
                 if (signInManager.IsSignedIn(User))
                 {
                     var likes = await blogPostLikeRepository.GetLikesForBlog(BlogPost.Id);
@@ -54,6 +64,28 @@ namespace MyBlog.Web.Pages.Admin.Blog
 
 
             return Page();
+        }
+
+        public async Task<IActionResult> OnPost()
+        {
+
+            if (signInManager.IsSignedIn(User)&& !string.IsNullOrWhiteSpace(CommentDescription))
+            {
+                var userId = userManager.GetUserId(User);
+                var comment = new BlogPostComment
+                {
+                    BlogPostId = BlogPost.Id,
+                    Description = CommentDescription,
+
+                    DateAdded = DateTime.Now,
+                    UserId = Guid.Parse(userId)
+                };
+                await blogPostCommentRepository.AddAsync(comment);
+            }
+            return Page();
+           
+          
+           
         }
     }
 }
