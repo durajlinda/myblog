@@ -36,34 +36,49 @@ namespace MyBlog.Web.Pages.Admin.Blogs
         {
         }
 
-       public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPost()
         {
-            var blogPost = new BlogPost()
+            ValidateAddBlogPost();
+
+            if (ModelState.IsValid)
             {
-                Heading = AddBlogPostRequest.Heading,
-                PageTitle = AddBlogPostRequest.PageTitle,
-                Content = AddBlogPostRequest.Content,
-                ShortDescription = AddBlogPostRequest.ShortDescription,
-                FeaturedImageUrl = AddBlogPostRequest.FeaturedImageUrl,
-                UrlHandle = AddBlogPostRequest.UrlHandle,
-                PublishedDate = AddBlogPostRequest.PublishedDate,
-                Author = AddBlogPostRequest.Author,
-                Visible = AddBlogPostRequest.Visible,
-                Tags = new List<Tag>(Tags.Split(',').Select(x => new Tag() { Name = x.Trim() }))
-            };
+                var blogPost = new BlogPost()
+                {
+                    Heading = AddBlogPostRequest.Heading,
+                    PageTitle = AddBlogPostRequest.PageTitle,
+                    Content = AddBlogPostRequest.Content,
+                    ShortDescription = AddBlogPostRequest.ShortDescription,
+                    FeaturedImageUrl = AddBlogPostRequest.FeaturedImageUrl,
+                    UrlHandle = AddBlogPostRequest.UrlHandle,
+                    PublishedDate = AddBlogPostRequest.PublishedDate,
+                    Author = AddBlogPostRequest.Author,
+                    Visible = AddBlogPostRequest.Visible,
+                    Tags = new List<Tag>(Tags.Split(',').Select(x => new Tag() { Name = x.Trim() }))
+                };
 
-            await  blogpostRepository.AddAsync(blogPost);
+                await blogpostRepository.AddAsync(blogPost);
 
-            var notification= new Notification
-            {
-                Type = Enums.NotificationType.Success,
-               Message = "Blog post added successfully",
-               
-            };
-               TempData["Notification"] = JsonSerializer.Serialize(notification);
+                var notification = new Notification
+                {
+                    Type = Enums.NotificationType.Success,
+                    Message = "Blog post added successfully",
 
-            return RedirectToPage("/Admin/Blogs/List");
+                };
+                TempData["Notification"] = JsonSerializer.Serialize(notification);
+
+                return RedirectToPage("/Admin/Blogs/List");
+
+            }
+            return Page();
         }
 
+            private void ValidateAddBlogPost()
+            {
+                if (AddBlogPostRequest.PublishedDate.Date < DateTime.Now.Date)
+                {
+                    ModelState.AddModelError("AddBlogPostRequest.PublishedDate",
+                        $"PublishedDate can only be today's date or a future date.");
+                }
+            }
+        }
     }
-}

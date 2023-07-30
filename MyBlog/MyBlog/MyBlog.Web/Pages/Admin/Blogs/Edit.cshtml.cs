@@ -34,7 +34,7 @@ namespace MyBlog.Web.Pages.Admin.Blogs
             BlogPost = await BlogpostRepository.GetAsync(id);
             if (BlogPost != null && BlogPost.Tags != null)
             {
-                Tags = string.Join(',', BlogPost.Tags.Select(x =>x.Name) );
+                Tags = string.Join(',', BlogPost.Tags.Select(x => x.Name));
             }
         }
 
@@ -42,7 +42,7 @@ namespace MyBlog.Web.Pages.Admin.Blogs
         {
             try
             {
-                BlogPost.Tags = new List <Tag>(Tags.Split(',').Select(x => new Tag { Name = x.Trim() }));
+                BlogPost.Tags = new List<Tag>(Tags.Split(',').Select(x => new Tag { Name = x.Trim() }));
                 await BlogpostRepository.UpdateAsync(BlogPost);
                 ViewData["Notification"] = new Notification
                 {
@@ -51,9 +51,9 @@ namespace MyBlog.Web.Pages.Admin.Blogs
                 };
 
             }
-           catch (Exception e)
+            catch (Exception e)
             {
-                ViewData["Notification"] = new 
+                ViewData["Notification"] = new
 
                 {
 
@@ -61,7 +61,7 @@ namespace MyBlog.Web.Pages.Admin.Blogs
                     Message = "Blog post update failed",
                 };
 
-               
+
             }
             return Page();
         }
@@ -75,9 +75,9 @@ namespace MyBlog.Web.Pages.Admin.Blogs
             {
                 var notification = new Notification
                 {
-                   
+
                     Type = NotificationType.Success,
-                     Message = "Blog post deleted successfully"
+                    Message = "Blog post deleted successfully"
                 };
                 TempData["Notification"] = JsonSerializer.Serialize(notification);
                 return RedirectToPage("/Admin/Blogs/List");

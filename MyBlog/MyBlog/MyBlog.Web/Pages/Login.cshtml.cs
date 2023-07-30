@@ -22,7 +22,7 @@ namespace MyBlog.Web.Pages
 
             if (signInResult.Succeeded)
             {
-                if(!string.IsNullOrWhiteSpace(ReturnUrl))
+                if (!string.IsNullOrWhiteSpace(ReturnUrl))
                 {
                     return RedirectToPage(ReturnUrl);
                 }
@@ -38,6 +38,9 @@ namespace MyBlog.Web.Pages
                 return Page();
             }
         }
+
+
+
 
     }
 }
