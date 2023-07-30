@@ -13,6 +13,8 @@ namespace MyBlog.Web.Pages.Admin.Users
 
         [BindProperty]
         public AddUser AddUserRequest { get; set; }
+        [BindProperty]
+        public Guid SelectedUserId { get; set; }
 
 
         public IndexModel(IUserRepository userRepository)
@@ -68,5 +70,13 @@ namespace MyBlog.Web.Pages.Admin.Users
 
 
         }
+
+
+        public async Task<IActionResult> OnPostDelete(Guid id)
+        {
+            await userRepository.Delete(SelectedUserId);
+            return RedirectToPage("/Admin/Users/Index");
+        }
+
     }
 }

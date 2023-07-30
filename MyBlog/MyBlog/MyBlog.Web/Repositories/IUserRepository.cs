@@ -7,5 +7,7 @@ namespace MyBlog.Web.Repositories
        Task<IEnumerable<IdentityUser>> GetAll();
 
         Task <bool>Add(IdentityUser identityuser, string password, List<string>roles);
+
+        Task Delete(Guid userId);
     }
 }
