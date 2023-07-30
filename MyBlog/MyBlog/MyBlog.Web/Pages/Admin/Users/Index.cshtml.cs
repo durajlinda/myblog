@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MyBlog.Web.Models.ViewModels;
@@ -9,7 +10,10 @@ namespace MyBlog.Web.Pages.Admin.Users
     {
         private readonly IUserRepository userRepository;
         public List<User> Users { get; set; }
-        
+
+        [BindProperty]
+        public AddUser AddUserRequest { get; set; }
+
 
         public IndexModel(IUserRepository userRepository)
         {
@@ -17,14 +21,14 @@ namespace MyBlog.Web.Pages.Admin.Users
         }
 
 
-       
+
 
         [HttpGet]
         public async Task<IActionResult> OnGet()
         {
-           var users = await userRepository.GetAll();
+            var users = await userRepository.GetAll();
 
-            Users = new List<User> ();
+            Users = new List<User>();
 
             foreach (var user in users)
             {
@@ -37,6 +41,32 @@ namespace MyBlog.Web.Pages.Admin.Users
                 });
             }
             return Page();
+        }
+
+
+        public async Task<IActionResult> OnPost()
+        {
+            var identityUser = new IdentityUser()
+            {
+                UserName = AddUserRequest.Username,
+                Email = AddUserRequest.Email
+            };
+
+            var roles = new List<string> { "User" };
+
+            if (AddUserRequest.AdminCheckbox)
+            {
+                roles.Add("Admin");
+            }
+            var result = await userRepository.Add(identityUser, AddUserRequest.Password, roles);
+
+            if (result)
+            {
+                return RedirectToPage("/Admin/Users/Index");
+            }
+            return Page();
+
+
         }
     }
 }

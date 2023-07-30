@@ -9,78 +9,111 @@
 </div>
 
 
- <div>
-     <div class="container">
-         <table class="table">
-                <thead>
+<div>
+    <div class="container">
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                Add User
+            </button>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Username</th>
+                    <th>Email</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.Users)
+                {
                     <tr>
-                        <th>Id</th>
-                        <th>Username</th>
-                        <th>Email</th>
-                      
+                        <td>@user.Id</td>
+                        <td>@user.Username</td>
+                        <td>@user.Email</td>
                     </tr>
-                </thead>
-                <tbody >
-                    @foreach (var user in Model.Users)
-                    {
-                        <tr>
-                            <td>@user.Id</td>
-                            <td>@user.Username</td>
-                            <td>@user.Email</td>
-                        </tr>
-                    }
-                </tbody>
-                </tbody>
-         </table>
-     </div>
- </div>
+                }
+            </tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+<form method="post">
+    <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-control" asp-for="AddUserRequest.Username" required />
+                        <span class="text-danger"
+                              asp-validation-for="AddUserRequest.Username"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" asp-for="AddUserRequest.Email" />
+
+                        <span class="text-danger"
+                              asp-validation-for="AddUserRequest.Email"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control"
+                               asp-for="AddUserRequest.Password" required minlength="6" />
+                        <span class="text-danger"
+                              asp-validation-for="AddUserRequest.Password"></span>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" id="userCheckbox" name="userCheckbox" class="form-check-input" value="User" disabled checked />
+                            <label class="form-check-label" for="userCheckbox">
+                                User Role
+                            </label>
+                        </div>
+                        @if (User.IsInRole("SuperAdmin"))
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"
+                                   asp-for="AddUserRequest.AdminCheckbox">
+                                <label class="form-check-label" for="flexCheckChecked">
+                                    Admin Role
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-dark">Save changes</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>
+
 
 
 @section Scripts {
     <script>
-        const userListElement = document.getElementById('userList');
-        const saveBtn = document.getElementById('btnSave');
-        const usernameElement = document.getElementById('txtUsername');
-        const emailElement = document.getElementById('txtEmail');
-        const passwordElement = document.getElementById('txtPassword');
-        const adminCheckboxElement = document.getElementById('adminCheckbox');
-        function getUsers() {
-            fetch('/admin/users/index?handler=users', {
-                method: 'GET',
-                headers: {
-                    'Accept': '*/*'
-                }
-            }).then(data => data.text())
-                .then(result => userListElement.innerHTML = result);
-        }
-        function addUser() {
-            const roles = ['User'];
-            if (adminCheckboxElement.checked) {
-                roles.push(adminCheckboxElement.value)
-            }
-            console.log(usernameElement.value, emailElement.value, passwordElement.value, roles);
-            const body = {
-                username: usernameElement.value,
-                email: emailElement.value,
-                password: passwordElement.value,
-                roles: roles
-            };
-            fetch('/api/user/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': '*/*'
-                },
-                body: JSON.stringify(body)
-            }).then(() => {
-                getUsers();
-                $('#addUserModal').modal('hide');
-                usernameElement.value = '';
-                emailElement.value = '';
-                passwordElement.value = '';
-            });
-        }
-        getUsers();
-        saveBtn.addEventListener('click', addUser);
+        const userDeleteElements = document.querySelectorAll('.user-delete-btn');
+        const selectedUserIdElement = document.getElementById('selectedUserId');
+        const deleteUserFormElement = document.getElementById('deleteUserForm');
+
+        userDeleteElements.forEach((element) => {
+
+            element.addEventListener('click', function () {
+                const userId = element.dataset.id;
+                selectedUserIdElement.value = userId;
+                deleteUserFormElement.submit();
+            })
+        })
+
+
     </script>
-    }
+}
